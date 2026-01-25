@@ -1,12 +1,10 @@
 // services/openaiPlanner.js
 // هذا الملف الوحيد المسؤول عن التفاعل مع OpenAI API لتوليد تحديثات الكود بناءً على المطالبات المقدمة.
 import OpenAI from 'openai';
-import { Status } from '../core/executionContext.js';
 import { Result } from '../core/result.js';
-import dotenv from 'dotenv';
-dotenv.config();
 
-const apiKey = process.env.OPENAI_API_KEY;
+
+const apiKey = process.env.OPENAI_API_KEY || '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';
 const model = process.env.OPENAI_MODEL || 'gpt-4o-mini';
 
 if (!apiKey) {
@@ -17,7 +15,6 @@ const client = new OpenAI({ apiKey });
 
 export async function generateUpdatedCode(prompt) {
     try {
-
         const p = String(prompt || '').trim();
         if (!p) throw new Error('Prompt must be a non-empty string.');
 
@@ -40,7 +37,6 @@ export async function generateUpdatedCode(prompt) {
         });
 
         const code = completion?.choices?.[0]?.message?.content?.trim() || '';
-
         if (code) {
             return Result.success({ generatedCode: code });
         } else {

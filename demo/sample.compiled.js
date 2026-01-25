@@ -1,7 +1,12 @@
-const flow = Task("Date Calculation Pipeline")
-  .then("Get the current date and time")
-  .then("Subtract one day from the current date")
-  .then("Print the difference to the console");
+// taskflow:generated:start
+(async () => {
+  const currentDate = new Date();
+  const previousDate = new Date(currentDate);
+  previousDate.setDate(currentDate.getDate() - 1);
+  const difference = currentDate - previousDate;
+  console.log(`Difference in milliseconds: ${difference}`);
+})();
+// taskflow:generated:end
 
 
 
