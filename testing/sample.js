@@ -1,6 +1,6 @@
-// demo/realUserExample.js
-// مثال واقعي لمستخدم: عنده إعدادات + pipelines + كود عادي بعدهم
-import { Task } from '../src/core/task.js';
+// testing/sample.js
+
+
 
 // ===== Inputs (موجودة قبل pipelines عشان الـ AI يستخدمها) =====
 const userEmail = "toqaj.sh@gmail.com";
@@ -10,14 +10,14 @@ const logFilePath = "./demo/app.log";
 
 // دالة مساعدة (كود عادي) ممكن الـ AI يستخدمها أو يتركها
 function formatEmail(to, subject, body) {
-  return `TO: ${to}\nSUBJECT: ${subject}\n\n${body}`;
+    return `TO: ${to}\nSUBJECT: ${subject}\n\n${body}`;
 }
 
 // ===== Pipeline 1: Email Notification Flow =====
 const emailFlow = Task("Email Notification")
-  .then("Create an email content using userEmail, subject, and messageText")
-  .then("Print the email content to the console")
-  .then("Print a confirmation message that the email is 'sent' (simulation only)");
+    .then("Create an email content using userEmail, subject, and messageText")
+    .then("Print the email content to the console")
+    .then("Print a confirmation message that the email is 'sent' (simulation only)");
 
 
 // ===== Code after pipelines (كود عادي لازم يظل ويشتغل) =====
@@ -31,13 +31,13 @@ console.log("\nEmail Preview (from normal code):\n" + preview);
 
 // ===== Pipeline 2: Logging Flow =====
 const loggingFlow = Task("Logging")
-  .then("Create a log line that contains current date and userEmail")
-  .then("Append the log line to logFilePath using node:fs/promises")
-  .then("Print the log file path to the console");
+    .then("Create a log line that contains current date and userEmail")
+    .then("Append the log line to logFilePath using node:fs/promises")
+    .then("Print the log file path to the console");
 
 const stats = {
-  emailLength: messageText.length,
-  timestamp: new Date().toISOString()
+    emailLength: messageText.length,
+    timestamp: new Date().toISOString()
 };
 console.log("\nStats:", stats);
 

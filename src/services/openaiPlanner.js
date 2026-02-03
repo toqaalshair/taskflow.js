@@ -1,22 +1,43 @@
 // services/openaiPlanner.js
 // هذا الملف الوحيد المسؤول عن التفاعل مع OpenAI API لتوليد تحديثات الكود بناءً على المطالبات المقدمة.
+import dotenv from "dotenv";
+
+
+
 import OpenAI from 'openai';
 import { Result } from '../core/result.js';
 
 
-const apiKey = process.env.OPENAI_API_KEY || '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';
+const apiKey = process.env.OPENAI_API_KEY;
 const model = process.env.OPENAI_MODEL || 'gpt-4o-mini';
 
-if (!apiKey) {
-    throw new Error('OPENAI_API_KEY is missing. Add it to your .env file.');
+
+let client = null;
+if (apiKey) {
+    client = new OpenAI({ apiKey });
 }
-// انشاء connection مع OpenAI API
-const client = new OpenAI({ apiKey });
+
+function buildMockCode(prompt) {
+
+    const safePrompt = JSON.stringify(String(prompt || ""));
+    return `
+console.log("=== TASKFLOW MOCK MODE ===");
+console.log("OpenAI unavailable, so mock code was used.");
+console.log("Prompt received:");
+console.log(${safePrompt});
+console.log("=== DONE ===");
+`;
+}
+
 
 export async function generateUpdatedCode(prompt) {
     try {
         const p = String(prompt || '').trim();
-        if (!p) throw new Error('Prompt must be a non-empty string.');
+        if (!p) return Result.failed('Prompt must be a non-empty string.');
+        if (!client) {
+            const mockCode = buildMockCode(p);
+            return Result.success({ generatedCode: mockCode, usedMock: true });
+        }
 
 
         // completions => انشاء ردود من النموذج بناءً على البرومبت المقدم    
@@ -43,8 +64,13 @@ export async function generateUpdatedCode(prompt) {
             throw new Error('No code generated.');
         }
     } catch (error) {
-        // هنا هندلة الأخطاء اللي ممكن تصير خلال التفاعل مع OpenAI API  
-        console.error("Error generating code from OpenAI:", error.message);
-        return Result.failed(error.message);
+        console.error("Error generating code from OpenAI:", error?.message || error);
+
+        const mockCode = buildMockCode(prompt);
+        return Result.success({
+            generatedCode: mockCode,
+            usedMock: true,
+            mockReason: error?.message || "OpenAI error"
+        });
     }
 }

@@ -1,5 +1,5 @@
 // demo/runPipeline.js
-import { compileAndRunPipeline } from '../controllers/workflowController.js';
+import { compileAndRunPipeline } from '../src/controllers/workflowController.js';
 
 const filePath = './sample.js';
 

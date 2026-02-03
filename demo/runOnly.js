@@ -1,4 +1,4 @@
-import { runCompiledFile } from '../services/pipelineRunner.js';
+import { runCompiledFile } from '../src/services/pipelineRunner.js';
 
 const compiledPath = './sample.compiled.js';
 

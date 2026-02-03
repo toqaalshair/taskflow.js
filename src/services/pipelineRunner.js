@@ -33,7 +33,10 @@ export async function runCompiledFile(compiledPath) {
       let stderr = '';
       // .on عشان نلتقط المخرجات و الأخطاء
       child.stdout.on('data', (d) => (stdout += d.toString()));
-      child.stderr.on('data', (d) => (stderr += d.toString()));
+      child.stderr.on('data', (d) => {
+        (stderr += d.toString())
+      }
+      );
 
       child.on('error', (err) => {
         resolve(Result.failed(`Failed to start node process: ${err.message}`));
@@ -43,7 +46,7 @@ export async function runCompiledFile(compiledPath) {
         if (code === 0) {
           resolve(Result.success({ exitCode: code, stdout, stderr }));
         } else {
-          resolve(Result.failed(`Process exited with code ${code}.`));
+          resolve(Result.failed(`Process exited with code ${code}\n${stderr.trim()}.`));
         }
       });
     });
