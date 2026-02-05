@@ -38,7 +38,7 @@ npm install -g taskflow
 Create a JavaScript file that contains TaskFlow pipelines.
 **Example: userApp.js**
 ```js
-import { Task } from "taskflow";
+import { Task } from "taskflow.js";
 
 const userEmail = "user@example.com";
 const subject = "Welcome!";
@@ -65,7 +65,7 @@ taskflow run userApp.js
 You can also use TaskFlow programmatically from another script.
 **Example: run.js**
 ```js
-import { compileAndRunPipeline } from "taskflow";
+import { compileAndRunPipeline } from "taskflow.js";
 
 const result = await compileAndRunPipeline("./userApp.js");
 
