@@ -26,11 +26,11 @@ TaskFlow is designed for automation, experimentation, and educational purposes.
 
 ### Local / Project Install
 ```bash
-npm install taskflow
+npm install taskflow.js
 ```
 ### Global Install (CLI)
 ```bash
-npm install -g taskflow
+npm install -g taskflow.js
 ```
 ---
 
