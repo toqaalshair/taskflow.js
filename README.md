@@ -26,11 +26,11 @@ TaskFlow is designed for automation, experimentation, and educational purposes.
 
 ### Local / Project Install
 ```bash
-npm install taskflow
+npm install taskflow.js
 ```
 ### Global Install (CLI)
 ```bash
-npm install -g taskflow
+npm install -g taskflow.js
 ```
 ---
 
@@ -38,7 +38,7 @@ npm install -g taskflow
 Create a JavaScript file that contains TaskFlow pipelines.
 **Example: userApp.js**
 ```js
-import { Task } from "taskflow";
+import { Task } from "taskflow.js";
 
 const userEmail = "user@example.com";
 const subject = "Welcome!";
@@ -65,7 +65,7 @@ taskflow run userApp.js
 You can also use TaskFlow programmatically from another script.
 **Example: run.js**
 ```js
-import { compileAndRunPipeline } from "taskflow";
+import { compileAndRunPipeline } from "taskflow.js";
 
 const result = await compileAndRunPipeline("./userApp.js");
 
@@ -109,6 +109,16 @@ TaskFlow uses the following environment variables:
 - OPENAI_API_KEY – Your OpenAI API key
 - OPENAI_MODEL – Optional model name (default: gpt-4o-mini)
 These can be defined in a .env file or directly in the system environment.
+
+---
+## Requirements
+
+-Node.js 18+
+-ES Modules
+
+## Notes
+- demo/ folder is for development only
+- .env is not included in the package
 
 
 

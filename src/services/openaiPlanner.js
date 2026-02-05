@@ -1,6 +1,11 @@
 // services/openaiPlanner.js
 // هذا الملف الوحيد المسؤول عن التفاعل مع OpenAI API لتوليد تحديثات الكود بناءً على المطالبات المقدمة.
-import dotenv from "dotenv";
+try {
+  await import("dotenv/config");
+} catch {
+    Result.failed('Failed to load environment variables. Make sure .env file is present and dotenv package is installed.');
+}
+
 
 
 
