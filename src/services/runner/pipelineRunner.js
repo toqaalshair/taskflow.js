@@ -1,7 +1,7 @@
 // services/pipelineRunner.js
 import { spawn } from 'node:child_process';
 import path from 'node:path';
-import { Result } from '../core/result.js';
+import { Result } from '../../core/result.js';
 
 export async function runCompiledFile(compiledPath) {
   try {
