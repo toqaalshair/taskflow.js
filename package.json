@@ -1,14 +1,10 @@
 {
   "name": "taskflow.js",
-  "version": "1.0.2",
+  "version": "1.1.3",
   "main": "./src/index.js",
   "type": "module",
   "exports": {
     ".": "./src/index.js"
-  },
-  "scripts": {
-    "test": "node demo/runPipeline.js",
-    "demo": "node demo/llm.js"
   },
   "bin": {
     "taskflow": "bin/taskflow.js"
@@ -28,7 +24,14 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
+    "@openrouter/sdk": "^0.11.2",
+    "acorn": "^8.16.0",
+    "acorn-walk": "^8.3.5",
+    "astring": "^1.9.0",
+    "child_process": "^1.0.2",
     "dotenv": "^17.2.3",
-    "openai": "^6.16.0"
+    "find-up": "^8.0.0",
+    "openai": "^6.16.0",
+    "taskflow.js": "^1.1.2"
   }
 }
