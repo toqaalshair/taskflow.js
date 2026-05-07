@@ -6,7 +6,6 @@ import { readFile, writeFile } from "node:fs/promises";
 import { Result } from "../core/result.js";
 
 import { extractIrWithAst } from "./ir/irExtractor.js";
-import { sanitizeGeneratedBlock } from "./generator/codeGenerator.js";
 import { mergeGeneratedCode } from "./compiler/astMerger.js";
 
 import {
@@ -15,7 +14,7 @@ import {
     installDependencies
 } from "./dependencies/dependencyManager.js";
 
-import { generateCodeFromIR } from "./generator/openaiGenerator.js";
+import { sanitizeGeneratedBlock, generateCodeFromIR } from "./generator/codeGenerator.js";
 
 
 export async function parseDslToIr(filePath) {

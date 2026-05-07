@@ -1,6 +1,13 @@
 # TaskFlow
 
-TaskFlow is a Node.js tool that allows developers to define **high-level task pipelines** using simple, readable steps, then automatically **compile and execute** them as real JavaScript code.
+TaskFlow is a Node.js tool for defining and executing **high-level workflow pipelines** using a simple, readable API.
+
+Instead of writing execution logic manually, developers describe **what should happen**, and TaskFlow handles:
+- parsing the workflow
+- generating executable JavaScript
+- running it automatically
+
+This makes it easier to build automation flows, prototypes, and structured task pipelines.
 
 It supports both:
 - 📦 **Library usage** (from JavaScript code)
@@ -13,11 +20,13 @@ TaskFlow is designed for automation, experimentation, and educational purposes.
 ## Features
 
 - Define pipelines using readable `.then("step description")` chains
-- Automatically generate executable JavaScript code
+- 🔀 **Parallel execution** with `.parallel([...])`
+- 🔁 **Conditional logic** with `.when(condition, callback)`
+- ⚙️ Automatic code generation and execution
+- 🧠 Internal processing via parsing → IR → code generation
 - Preserve all non-pipeline code exactly as-is
-- Run pipelines sequentially with clear logging
 - CLI support (`taskflow run <file>`)
-- Graceful fallback when OpenAI is unavailable (Mock Mode)
+- 🧪 Mock Mode fallback when OpenAI is unavailable
 - ES Modules support
 
 ---
@@ -34,40 +43,40 @@ npm install -g taskflow.js
 ```
 ---
 
-## CLI Usage
-Create a JavaScript file that contains TaskFlow pipelines.
-**Example: userApp.js**
+**Quick Example: userApp.js**
 ```js
 import { Task } from "taskflow.js";
 
-const userEmail = "user@example.com";
-const subject = "Welcome!";
-const messageText = "Hello from TaskFlow 👋";
+const isProduction = true;
 
-const emailFlow = Task("Email Notification")
-  .then("Create an email content using userEmail, subject, and messageText")
-  .then("Print the email content to the console")
-  .then("Print a confirmation message that the email is 'sent'");
+const pipeline = Task("Build Pipeline")
+  .then("Install dependencies")
+
+  .parallel([
+    "Build frontend",
+    "Build backend"
+  ])
+
+  .when(isProduction, (flow) => {
+    flow.then("Deploy application");
+  })
+
+  .then("Print build summary");
   ```
+## Usage
 
 ### Run the file using the CLI:
 ```bash
 taskflow run userApp.js
 ```
 
-#### TaskFlow will:
-- Analyze the pipelines
-- Generate executable JavaScript code
-- Compile the file into a .compiled.js file
-- Execute the compiled output
-
-## Library Usage
+### Run the file Library Usage
 You can also use TaskFlow programmatically from another script.
 **Example: run.js**
 ```js
-import { compileAndRunPipeline } from "taskflow.js";
+import { compileAndRunFromIr } from "taskflow.js";
 
-const result = await compileAndRunPipeline("./userApp.js");
+const result = await compileAndRunFromIr("./userApp.js");
 
 if (!result.ok) {
   console.error(result.error);
@@ -82,24 +91,57 @@ console.log(result.data.runOutput.stdout);
 ```bash
 node run.js
 ```
+### How It Works
+
+TaskFlow processes workflows in multiple stages:
+
+1. Parsing
+Extracts pipeline definitions from your code
+2. IR Transformation
+Converts workflows into an intermediate representation (IR)
+3. Code Generation
+Generates executable JavaScript (AI-assisted or mock)
+4. Execution
+Runs the generated pipeline inside Node.js
+
 
 ## Output
-After execution, TaskFlow returns:
-- The path to the compiled file
-- The runtime output (stdout, stderr, exitCode)
+
+After execution, TaskFlow provides detailed results about the compiled and executed pipeline:
+
+- **Compiled File Path**  
+  The location of the generated `.compiled.js` file that contains the executable pipeline.
+
+- **Standard Output (`stdout`)**  
+  The console output produced during pipeline execution (e.g., task logs, results).
+
+- **Standard Error (`stderr`)**  
+  Any error messages generated during execution.
+
+- **Exit Code (`exitCode`)**  
+  Indicates whether execution succeeded (`0`) or failed (non-zero).
+
+This structured output allows developers to inspect execution behavior, debug workflows, and integrate TaskFlow results into other systems.
 
 ---
 
 ## Mock Mode (OpenAI Fallback)
 
-If OpenAI is unavailable (missing API key, quota exceeded, or connection issues), TaskFlow automatically switches to Mock Mode.
+If OpenAI is unavailable (missing API key, quota exceeded, or network issues), TaskFlow automatically switches to Mock Mode.
 
 In Mock Mode:
 
-- A deterministic JavaScript block is generated
-- The full compile → run flow is preserved
-- The system continues to work for demos and testing
-- The CLI indicates when Mock Mode is used.
+- No external API is required
+- A deterministic JavaScript pipeline is generated
+- Each task is represented as a clear log (MOCK TASK)
+- Retry behavior and execution flow are still simulated
+- The full compile → run pipeline remains unchanged
+
+This allows you to:
+
+Test workflows without API access
+Debug pipeline structure
+Demonstrate system behavior reliably
 
 ---
 
@@ -117,7 +159,6 @@ These can be defined in a .env file or directly in the system environment.
 -ES Modules
 
 ## Notes
-- demo/ folder is for development only
 - .env is not included in the package
 
 
