@@ -1,3 +1,8 @@
 node_modules/
 .env
-demo/
+*.compiled.js
+dist/
+build/
+logs/
+*.log
+.DS_Store

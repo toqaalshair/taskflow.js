@@ -1,30 +1,51 @@
 // controllers/workflowController.js
-
 import { Result } from '../core/result.js';
-import { compilePipelineFromFile } from '../services/pipelineCompiler.js';
-import { runCompiledFile } from '../services/pipelineRunner.js';
+import { compileFromIr, parseDslToIr } from '../services/pipelineCompiler.js';
+import { runCompiledFile } from '../services/runner/pipelineRunner.js';
 
-// دالة لتجميع الـ compile و الـ run داخل controller
-export async function compileAndRunPipeline(filePath) {
+
+export async function compileAndRunFromIr(filePath) {
     try {
-        // أولاً نعمل compile للـ pipeline
-        const compileResult = await compilePipelineFromFile(filePath);
+        const compileResult = await compileFromIr(filePath);
 
-        if (!compileResult.ok) return compileResult; // لو في فشل في compile نرجع نفس الـ Result
+        if (!compileResult.ok) {
+            return compileResult;
+        }
 
-        const { compiledPath, title, steps } = compileResult.data;
+        const { compiledPath } = compileResult.data;
 
-        // بعد ما نعمل compile بنشغّل الملف المولّد
         const runResult = await runCompiledFile(compiledPath);
 
-        if (!runResult.ok) return runResult; // لو في فشل أثناء التشغيل نرجع نفس الـ Result
+        if (!runResult.ok) {
+            return runResult;
+        }
 
         return Result.success({
             compiledPath,
-            runOutput: runResult.data,// يشتمل على stdout, stderr, exitCode
+            runOutput: runResult.data,
+            ir: compileResult.data.ir,
             usedMock: compileResult.data.usedMock,
             mockReason: compileResult.data.mockReason
         });
+    } catch (err) {
+        return Result.failed(err.message);
+    }
+}
+
+
+/**
+ * للاختبار فقط:
+ * يولد الـ IR من ملف DSL بدون تنفيذ.
+ */
+export async function generateIRFromDSL(filePath) {
+    try {
+        const irResult = await parseDslToIr(filePath);
+
+        if (!irResult.ok) {
+            return irResult;
+        }
+
+        return Result.success(irResult.data);
     } catch (err) {
         return Result.failed(err.message);
     }

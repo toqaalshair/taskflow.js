@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 import path from "node:path";
 import process from "node:process";
-import { compileAndRunPipeline } from "../src/index.js";
+import { compileAndRunFromIr } from "../src/index.js";
+
 
 function printHelp() {
     console.log(`
-TaskFlow CLI
+TaskFlow    
 
 Usage:
   taskflow run <file>
@@ -46,7 +47,7 @@ async function main() {
 
     const filePath = toAbs(fileArg);
 
-    const result = await compileAndRunPipeline(filePath);
+    const result = await compileAndRunFromIr(filePath);
 
     if (!result?.ok) {
         // حسب Result عندكم: إمّا error أو message
@@ -55,16 +56,22 @@ async function main() {
         process.exit(1);
     }
 
-    const { compiledPath, runOutput } = result.data || {};
+  const { compiledPath, runOutput } = result.data || {};
+
+if (compiledPath) {
     console.log(`Compiled: ${compiledPath}`);
+}
 
-    // اطبع stdout/stderr لو موجودين
-    if (runOutput?.stdout) process.stdout.write(runOutput.stdout);
-    if (runOutput?.stderr) process.stderr.write(runOutput.stderr);
+if (runOutput?.stdout) {
+    process.stdout.write(runOutput.stdout);
+}
 
-    // exitCode لو بدكم تعكسوه
-    const exitCode = Number.isInteger(runOutput?.exitCode) ? runOutput.exitCode : 0;
-    process.exit(exitCode);
+if (!runOutput?.stdout && runOutput?.stderr) {
+    process.stderr.write(runOutput.stderr);
+    process.exit(1);
+}
+
+process.exit(0);
 }
 
 main().catch((err) => {
