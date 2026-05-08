@@ -18,11 +18,11 @@ Examples:
 }
 
 function toAbs(p) {
-    // دعم مسارات نسبية
     return path.isAbsolute(p) ? p : path.resolve(process.cwd(), p);
 }
 
 async function main() {
+
     const args = process.argv.slice(2);
 
     if (args.length === 0 || args.includes("-h") || args.includes("--help")) {
@@ -44,7 +44,6 @@ async function main() {
         printHelp();
         process.exit(1);
     }
-
     const filePath = toAbs(fileArg);
 
     const result = await compileAndRunFromIr(filePath);
@@ -72,6 +71,22 @@ if (!runOutput?.stdout && runOutput?.stderr) {
 }
 
 process.exit(0);
+    const { compiledPath, runOutput } = result.data || {};
+
+    if (compiledPath) {
+        console.log(`Compiled: ${compiledPath}`);
+    }
+
+    if (runOutput?.stdout) {
+        process.stdout.write(runOutput.stdout);
+    }
+
+    if (!runOutput?.stdout && runOutput?.stderr) {
+        process.stderr.write(runOutput.stderr);
+        process.exit(1);
+    }
+
+    process.exit(0);
 }
 
 main().catch((err) => {
